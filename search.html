@@ -1,0 +1,165 @@
+<html>
+<head>
+
+	<title>机动车环保信息随车清单</title>
+	<link rel="shortcut icon" href="/XxgkVin/images/favicon.ico" type="image/x-icon">
+	<meta name="robots" content="nofollow">
+	<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=2.0, user-scalable=yes" /> -->
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+	<meta http-equiv=Content-Type content="text/html; charset=utf-8"> 
+	 
+	<style type="text/css">
+	html, body{
+	    height: 100%;
+	    overflow: auto;
+	}
+	body{
+	    padding: 0;
+	    margin: 0;
+	}
+	.submit{
+		background:none;
+		border:0;
+	}
+	.submit:focus{outline:0;} 
+	</style>
+
+	<script type="text/javascript" src="static/template/layui/layui.js"></script>
+	<script type="text/javascript">
+		//layui
+		var $,tab,dataStr,layer;
+		layui.config({
+			base:"/static/template/js/",
+			version:"20200923-2",
+			//version:true
+		}).extend({
+			kjs:"../../extend/kjs",
+		});
+	</script>
+
+</head>
+
+<body>
+ 
+	<form id="form" name="frmVin" method="post" action="info.html">    
+		<table width="320" border="0" align="center" cellspacing="0" cellpadding="0" height="480">
+		  <tr> 
+		    <td height="331" background="html/bk.jpg" valign="top"> 
+		      <table width="260" border="0" align="center" cellpadding="0" cellspacing="0">
+		        <tr> 
+		          <td valign="top" height="80">&nbsp;</td>
+		        </tr>
+		        <tr> 
+		          <td valign="top" align="center" height="30" style="font-size:23px;">LZGCR2N61KB010855</td>
+		        </tr>
+		        <tr>
+		          <td height="50"> 
+		            <div align="center"> 
+		              <!-- <input type="text" name="fdjh" id="fdjh" value="请输入发动机编号后6位" size="35" style="color: rgb(153, 153, 153);HEIGHT: 30px"  onfocus="if(value=='请输入发动机编号后6位') {value='';}this.style.color='#000';" onblur="if (value=='') {value='请输入发动机编号后6位';this.style.color='#999';}"> -->
+		              <input type="text" name="fdjh" placeholder="请输入发动机编号后6位" size="35" style="color: rgb(153, 153, 153);HEIGHT: 30px" autocomplete="off">
+		          	</div>
+		          </td>
+		        </tr>
+		        <tr> 
+		          <td height="50"> 
+		            <div align="center"> 
+		              <!-- <input type="text" name="verify" id="rand_user" value="请输入验证码" size="35" style="color: rgb(153, 153, 153);HEIGHT: 30px"  onfocus="if(value=='请输入验证码') {value='';}this.style.color='#000';" onblur="if (value=='') {value='请输入验证码';this.style.color='#999';}"> -->
+		              <input type="text" name="verify" placeholder="请输入验证码" size="35" style="color: rgb(153, 153, 153);HEIGHT: 30px" autocomplete="off">
+		            </div>
+		          </td>
+		        </tr>
+		        <tr> 
+		          <td height="60">
+		          <div align="center"> 
+					<img class="verify" style="margin-top:0px;width:100px;height:30px;" alt="点击刷新验证码" name="randImage" id="randImage" src="index/index/verify.png"   border="1" align="absmiddle" > 
+				</div>
+		          </td>
+		        </tr>
+		        <tr> 
+		          <td height="60">
+		            <div align="center">
+		            	<button class="submit" type="submit"><img src="html/query.jpg" width="257" height="39" border="0"></button>
+		            </div>
+					<input name="vin" type="hidden" id="vin" value="LZGJL4Y42GX007553">
+		          </td>
+		        </tr>
+		      </table>
+		    </td>
+		  </tr>
+		</table>
+	</form>
+
+	<div id="res" style="display: block; margin-left: 35px; width: 820px;display:none;"></div>
+
+	<script type="text/javascript">
+		
+		layui.use(['form','layer','kjs'],function(){
+
+		    var form = layui.form,
+		        layer = parent.layer === undefined ? layui.layer : top.layer,
+		        $ = layui.jquery,
+	        	util = layui.kjs;
+
+	        //验证码
+	        function updateVerify(){
+	            var timestamp = Date.parse(new Date());
+	            timestamp = timestamp / 1000;
+	            $('.verify').attr('src',"index/index/verify?time="+timestamp);
+	        }
+	        $('.verify').click(function(){
+	            updateVerify();
+	        });
+
+	       	// util.submit({
+	       	// 	elem:'#form',
+	       	// 	tips:false,
+	       	// 	success:function(sd){
+	       	// 		if(sd.code==1){
+	       	// 		}else{
+	       	// 			alert(sd.msg);
+	       	// 		}
+	       	// 	}
+	       	// });
+
+	       	$('#form').submit(function(){
+	       		var fdjh = $('[name="fdjh"]').val();
+	       		if(fdjh==''){
+	       			alert('请输入发动机号');
+	       			return false;
+	       		}
+	       		var verify = $('[name="verify"]').val();
+	       		if(verify==''){
+	       			alert('请输入验证码');
+	       			return false;
+	       		}
+	       		var vin = "LZGCR2N61KB010855";
+	       		util.ajax({
+	       			url:"/index/index/find",
+	       			data:{
+	       				vin:vin,
+	       				fdjh:fdjh,
+	       				verify:verify,
+	       			},
+	       			tips:false,
+	       			success:function(sd){
+	       				console.log(sd);
+	       				if(sd.code==1){
+	       					$('#form').hide();
+	       					var viewport = document.querySelector("meta[name=viewport]");
+							viewport.setAttribute('content', '');
+	       					$('#res').html(sd.data).show();
+	       				}else{
+	       					alert(sd.msg);
+	       					updateVerify();
+	       				}
+	       			}
+	       		});
+	       		return false;
+	       	});
+
+		});
+
+	</script>
+ 
+</body>
+</html>
