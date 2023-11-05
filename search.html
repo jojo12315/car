@@ -2,7 +2,7 @@
 <head>
 
 	<title>机动车环保信息随车清单</title>
-	<link rel="shortcut icon" href="/XxgkVin/images/favicon.ico" type="image/x-icon">
+	<!-- <link rel="shortcut icon" href="XxgkVin/images/favicon.ico" type="image/x-icon"> -->
 	<meta name="robots" content="nofollow">
 	<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=2.0, user-scalable=yes" /> -->
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
@@ -22,41 +22,30 @@
 		border:0;
 	}
 	.submit:focus{outline:0;} 
+
 	</style>
 
 	<script type="text/javascript" src="static/template/layui/layui.js"></script>
-	<script type="text/javascript">
-		//layui
-		var $,tab,dataStr,layer;
-		layui.config({
-			base:"/static/template/js/",
-			version:"20200923-2",
-			//version:true
-		}).extend({
-			kjs:"../../extend/kjs",
-		});
-	</script>
-
 </head>
 
 <body>
  
-	<form id="form" name="frmVin" method="post" action="info.html">    
-		<table width="320" border="0" align="center" cellspacing="0" cellpadding="0" height="480">
+	<form id="form" name="frmVin" method="get" action="info.html">    
+		<table width="320" border="0" background="html/bk.jpg" align="center" cellspacing="0" cellpadding="0" height="480">
 		  <tr> 
-		    <td height="331" background="html/bk.jpg" valign="top"> 
+		    <td height="331" valign="top"> 
 		      <table width="260" border="0" align="center" cellpadding="0" cellspacing="0">
 		        <tr> 
 		          <td valign="top" height="80">&nbsp;</td>
 		        </tr>
 		        <tr> 
-		          <td valign="top" align="center" height="30" style="font-size:23px;">LZGCR2N61KB010855</td>
+		          <td valign="top" align="center" height="30" style="font-size:23px;">LRDV7PECOHH501633</td>
 		        </tr>
 		        <tr>
 		          <td height="50"> 
 		            <div align="center"> 
 		              <!-- <input type="text" name="fdjh" id="fdjh" value="请输入发动机编号后6位" size="35" style="color: rgb(153, 153, 153);HEIGHT: 30px"  onfocus="if(value=='请输入发动机编号后6位') {value='';}this.style.color='#000';" onblur="if (value=='') {value='请输入发动机编号后6位';this.style.color='#999';}"> -->
-		              <input type="text" name="fdjh" placeholder="请输入发动机编号后6位" size="35" style="color: rgb(153, 153, 153);HEIGHT: 30px" autocomplete="off">
+		              <input type="text" name="fdjhs" placeholder="请输入发动机编号后6位" size="35" style="color: rgb(153, 153, 153);HEIGHT: 30px" autocomplete="off">
 		          	</div>
 		          </td>
 		        </tr>
@@ -64,15 +53,15 @@
 		          <td height="50"> 
 		            <div align="center"> 
 		              <!-- <input type="text" name="verify" id="rand_user" value="请输入验证码" size="35" style="color: rgb(153, 153, 153);HEIGHT: 30px"  onfocus="if(value=='请输入验证码') {value='';}this.style.color='#000';" onblur="if (value=='') {value='请输入验证码';this.style.color='#999';}"> -->
-		              <input type="text" name="verify" placeholder="请输入验证码" size="35" style="color: rgb(153, 153, 153);HEIGHT: 30px" autocomplete="off">
+		              <input type="text" name="verify"  placeholder="请输入验证码" size="35" style="color: rgb(153, 153, 153);HEIGHT: 30px" autocomplete="off">
 		            </div>
 		          </td>
 		        </tr>
 		        <tr> 
 		          <td height="60">
-		          <div align="center"> 
-					<img class="verify" style="margin-top:0px;width:100px;height:30px;" alt="点击刷新验证码" name="randImage" id="randImage" src="index/index/verify.png"   border="1" align="absmiddle" > 
-				</div>
+		          	<div align="center"> 
+						<canvas id="canvas" width="100" height="43"></canvas>
+					</div>
 		          </td>
 		        </tr>
 		        <tr> 
@@ -90,76 +79,121 @@
 	</form>
 
 	<div id="res" style="display: block; margin-left: 35px; width: 820px;display:none;"></div>
-
+	<script type="text/javascript">
+		//layui
+		var $,tab,dataStr,layer;
+		layui.config({
+			base:"static/template/js/",
+			version:"20200923-2",
+			//version:true
+		}).extend({
+			kjs:"../../extend/kjs",
+		});
+	</script>
 	<script type="text/javascript">
 		
-		layui.use(['form','layer','kjs'],function(){
 
-		    var form = layui.form,
-		        layer = parent.layer === undefined ? layui.layer : top.layer,
-		        $ = layui.jquery,
-	        	util = layui.kjs;
+		layui.use(['form','layer','kjs','jquery'],function(){
+			
 
-	        //验证码
-	        function updateVerify(){
-	            var timestamp = Date.parse(new Date());
-	            timestamp = timestamp / 1000;
-	            $('.verify').attr('src',"index/index/verify?time="+timestamp);
-	        }
-	        $('.verify').click(function(){
-	            updateVerify();
-	        });
-
-	       	// util.submit({
-	       	// 	elem:'#form',
-	       	// 	tips:false,
-	       	// 	success:function(sd){
-	       	// 		if(sd.code==1){
-	       	// 		}else{
-	       	// 			alert(sd.msg);
-	       	// 		}
-	       	// 	}
-	       	// });
+		    var form = layui.form
+		    var layer = parent.layer === undefined ? layui.layer : top.layer
+			var $ = layui.jquery
+	        var	util = layui.kjs
+			var show_num = [];
+			$(function () {
+				draw(show_num);//加载验证码
+		
+				//看不清楚重新获取验证码
+				$("#canvas").on('click', function () {
+					draw(show_num);
+				})
+			})
+		
+			function draw(show_num) {
+				var canvas_width = $('#canvas').width();
+				var canvas_height = $('#canvas').height();
+				var canvas = document.getElementById("canvas");//获取到canvas的对象，演员
+				var context = canvas.getContext("2d");//获取到canvas画图的环境，演员表演的舞台
+				canvas.width = canvas_width;
+				canvas.height = canvas_height;
+				var sCode = "A,B,C,E,F,G,H,J,K,L,M,N,P,Q,R,S,T,W,X,Y,Z,1,2,3,4,5,6,7,8,9,0";
+				var aCode = sCode.split(",");
+				var aLength = aCode.length;//获取到数组的长度
+		
+				for (var i = 0; i <= 3; i++) {
+					var j = Math.floor(Math.random() * aLength);//获取到随机的索引值
+					var deg = Math.random() * 30 * Math.PI / 180;//产生0~30之间的随机弧度
+					var txt = aCode[j];//得到随机的一个内容
+					show_num[i] = txt.toLowerCase();
+					var x = 10 + i * 20;//文字在canvas上的x坐标
+					var y = 20 + Math.random() * 8;//文字在canvas上的y坐标
+					context.font = "bold 23px 微软雅黑";
+					context.translate(x, y);
+					context.rotate(deg);
+					context.fillStyle = randomColor();
+					context.fillText(txt, 0, 0);
+					context.rotate(-deg);
+					context.translate(-x, -y);
+				}
+				for (var i = 0; i <= 5; i++) { //验证码上显示线条
+					context.strokeStyle = randomColor();
+					context.beginPath();
+					context.moveTo(Math.random() * canvas_width, Math.random() * canvas_height);
+					context.lineTo(Math.random() * canvas_width, Math.random() * canvas_height);
+					context.stroke();
+				}
+				for (var i = 0; i <= 30; i++) { //验证码上显示小点
+					context.strokeStyle = randomColor();
+					context.beginPath();
+					var x = Math.random() * canvas_width;
+					var y = Math.random() * canvas_height;
+					context.moveTo(x, y);
+					context.lineTo(x + 1, y + 1);
+					context.stroke();
+				}
+			}
+		
+			function randomColor() {//得到随机的颜色值
+				var r = Math.floor(Math.random() * 256);
+				var g = Math.floor(Math.random() * 256);
+				var b = Math.floor(Math.random() * 256);
+				return "rgb(" + r + "," + g + "," + b + ")";
+			}
+		
 
 	       	$('#form').submit(function(){
-	       		var fdjh = $('[name="fdjh"]').val();
+	       		var fdjh = $('[name="fdjhs"]').val();
 	       		if(fdjh==''){
 	       			alert('请输入发动机号');
 	       			return false;
-	       		}
-	       		var verify = $('[name="verify"]').val();
-	       		if(verify==''){
-	       			alert('请输入验证码');
+	       		}else if (fdjh!= "995392" ) {
+	       			alert('发动机号错误');
 	       			return false;
 	       		}
-	       		var vin = "LZGCR2N61KB010855";
-	       		util.ajax({
-	       			url:"/index/index/find",
-	       			data:{
-	       				vin:vin,
-	       				fdjh:fdjh,
-	       				verify:verify,
-	       			},
-	       			tips:false,
-	       			success:function(sd){
-	       				console.log(sd);
-	       				if(sd.code==1){
-	       					$('#form').hide();
-	       					var viewport = document.querySelector("meta[name=viewport]");
-							viewport.setAttribute('content', '');
-	       					$('#res').html(sd.data).show();
-	       				}else{
-	       					alert(sd.msg);
-	       					updateVerify();
-	       				}
-	       			}
-	       		});
-	       		return false;
-	       	});
+				
+	       		var verify = $('[name="verify"]').val().toLowerCase();
+				var num = show_num.join("");
 
+	       		if(verify.length <= 0){
+	       			alert('请输入验证码');
+	       			return false;
+	       		}else if(verify != num ){
+					alert('验证码错误！请重新输入！');
+					$('[name="verify"]').val('');
+					setTimeout(function () {
+						draw(show_num);
+					}, 1000)
+					return false;
+				}
+	       		var vin = "LRDV7PECOHH501633";
+	       	
+	       	});
 		});
 
 	</script>
+
+
  
 </body>
 </html>
